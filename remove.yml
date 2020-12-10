@@ -9,13 +9,13 @@
       update_cache: yes
       
 
-  - name: install apache
+  - name: remove apache
     apt:
       name: apache
       state: absent
 
 
-  - name: install php
+  - name: remove php
     apt:
       name: libapache2-mod-php
       state: absent
