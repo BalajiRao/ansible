@@ -1,0 +1,42 @@
+---
+
+
+- hosts: all
+  become: yes
+  tasks:
+  
+
+   - name: install updates (Centos)
+     dnf:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "Centos"
+
+
+   - name: install updates (Ubuntu)
+     apt:
+       upgrade: dist
+       update_cache: yes
+     when: anisible_distribution == "Ubuntu"
+
+
+
+- hosts: web_servers
+  become: yes
+  tasks:
+
+
+   - name: install apache on ubuntu
+     apt:
+       name:
+         - apache2
+       state: latest
+     when: anisible_distribution == "Ubuntu"
+
+
+   - name: install https on centos    
+     dnf:
+       name:
+         - httpd
+       state: latest
+     when: ansible_distribution == "Centos"
