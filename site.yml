@@ -6,21 +6,51 @@
   tasks:
   
 
-   - name: install updates (Centos)
+   - name: update repo cache (Centos)
      tags: always
      dnf:
-       update_only: yes
        update_cache: yes
+     changed_when: false
      when: ansible_distribution == "Centos"
 
 
-   - name: install updates (Ubuntu)
+   - name: update repo cache (Ubuntu)
      tags: always
      apt:
-       upgrade: dist
        update_cache: yes
+     changed_when: false
      when: ansible_distribution == "Ubuntu"
 
+
+- hosts: all
+  become: yes
+  tasks:
+
+  - name: add ssh keys for Babu
+    tags: always
+    authorized_key: 
+      user: babu
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN586/NZ8xPOWU07Uu1EMjLsHUSEPfI2z4g/wQTiO9X/ babu" 
+
+
+
+- hosts: workstations
+  become: yes
+  tasks:
+
+
+  - name: install unzip
+    package: 
+      name: unzip
+
+  - name: install terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/0.14.2/terraform_0.14.2_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
 
 
 - hosts: web_servers
@@ -43,6 +73,14 @@
        name:
          - httpd
        state: latest
+     when: ansible_distribution == "Centos"
+
+
+   - name: Start httpd (CentOS)
+     tags: apache, centos, httpd
+     service:
+       name: httpd
+       state: strted
      when: ansible_distribution == "Centos"
    
 
