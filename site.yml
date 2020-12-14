@@ -44,7 +44,16 @@
          - httpd
        state: latest
      when: ansible_distribution == "Centos"
+   
 
+   - name: copy the file to servers
+     tags: apache,apache2,ubuntu
+     copy:
+       src: defa.html
+       dest: /var/www/html/index.html
+       owner: root
+       group: root
+       mode: 0644 
 
 - hosts: db_servers
   become: yes
