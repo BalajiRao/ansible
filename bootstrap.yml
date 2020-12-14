@@ -1,0 +1,52 @@
+---
+
+
+- hosts: all
+  become: yes
+  tasks:
+  
+
+   - name: install updates (Centos)
+     tags: always
+     dnf:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "Centos"
+
+
+   - name: install updates (Ubuntu)
+     tags: always
+     apt:
+       upgrade: dist
+       update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+
+
+- hosts: all
+  become: yes
+  tasks:
+
+  - name: create a user Babu
+    tags: always
+    user: 
+      name: babu
+      groups: root
+
+
+  - name: add ssh keys for Babu
+    tags: always
+    authorized_key: 
+      user: babu
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN586/NZ8xPOWU07Uu1EMjLsHUSEPfI2z4g/wQTiO9X/ babu" 
+
+
+  - name: add sudoers file for babu
+    tags: always
+    copy: 
+      src: sudoer_babu
+      dest: /etc/sudoers.d/babu
+      owner: root
+      group: root 
+      mode: 0440
+
+
