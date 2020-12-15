@@ -1,0 +1,5 @@
+- name: add ssh keys for Babu
+  authorized_key:
+     user: babu
+     key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN586/NZ8xPOWU07Uu1EMjLsHUSEPfI2z4g/wQTiO9X/ babu"
+
