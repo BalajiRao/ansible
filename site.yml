@@ -24,94 +24,30 @@
 
 - hosts: all
   become: yes
-  tasks:
-
-  - name: add ssh keys for Babu
-    tags: always
-    authorized_key: 
-      user: babu
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN586/NZ8xPOWU07Uu1EMjLsHUSEPfI2z4g/wQTiO9X/ babu" 
-
-
+  roles: 
+   - base
 
 - hosts: workstations
   become: yes
-  tasks:
-
-
-  - name: install unzip
-    package: 
-      name: unzip
-
-  - name: install terraform
-    unarchive:
-      src: https://releases.hashicorp.com/terraform/0.14.2/terraform_0.14.2_linux_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      mode: 0755
-      owner: root
-      group: root
-
+  roles:
+   - workstations
 
 - hosts: web_servers
   become: yes
-  tasks:
+  roles:
+   - web_servers
 
-
-   - name: install apache on ubuntu
-     tags: apache, apache2, ubuntu
-     apt:
-       name:
-         - apache2
-       state: latest
-     when: ansible_distribution == "Ubuntu"
-
-
-   - name: install https on centos
-     tags: apache, centos, httpd    
-     dnf:
-       name:
-         - httpd
-       state: latest
-     when: ansible_distribution == "Centos"
-
-
-   - name: Start httpd (CentOS)
-     tags: apache, centos, httpd
-     service:
-       name: httpd
-       state: strted
-     when: ansible_distribution == "Centos"
-   
-
-   - name: copy the file to servers
-     tags: apache,apache2,ubuntu
-     copy:
-       src: defa.html
-       dest: /var/www/html/index.html
-       owner: root
-       group: root
-       mode: 0644 
 
 - hosts: db_servers
   become: yes
-  tasks:
+  roles:
+   - db_servers
+
+- hosts: file_servers
+  become: yes
+  roles:
+   - file_servers
 
 
-  - name: Install mariadb
-    tags: ubuntu,db,mariadb
-    apt:
-      name:
-        - mariadb-server
-      state: latest
-    when: ansible_distribution == "Ubuntu"
 
-
-  - name: INSTALL db
-    tags: ubuntu,db,mariadb
-    dnf:
-      name:
-        - mariadb
-      state: latest
-    when: ansible_distribution == "Centos"
 
